@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+</head>
+<body>
+
+    <div id="app">
+        <h1>Type in your task here:</h1>
+        <input @keyup.enter="addTask()" v-model.trim="text" maxlength="200">
+    <br>
+
+        <button @click="addTask()">add task</button>
+    <br>
+    <div>{{"#"}} {{" | "}} {{"task unique timestamp code"}} {{" | "}} {{"task user text"}} {{" | "}} {{"task status"}}
+    </div>
+
+    <div v-for="task in tasks">{{task.number}} {{" | "}} {{task.timestamp}} {{" | "}} {{task.text}} {{" | "}} {{task.isCompleted}}
+        <input type="checkbox" v-model="task.isCompleted">
+        <button @click="deleteTask(task.timestamp)">delete</button>
+        <button @click="task.isEdited=!task.isEdited">Edit</button>
+        <div v-if="task.isEdited">
+            <input @keyup.enter="edit(task)" @keyup.esc="task.isEdited=!task.isEdited" v-model.trim="task.editValue">
+            <button @click="edit(task)">Save</button>
+            <button @click="task.isEdited=!task.isEdited">Undo</button>
+        </div>
+
+    </div>
+    </div>
+    <script>
+    
+new Vue({
+    el:'#app',
+    data:{
+        number: 1,
+        timestamp: 1111111111111,
+        text: '',
+        isCompleted: false,
+        isEdited: false,
+        editValue: '',
+       tasks: 
+       [
+       {
+        number: 0,
+        timestamp: 1111111111111,
+        text: 'task text example',
+        isCompleted: true,
+        isEdited: false,
+        editValue: '',
+       }
+        ]
+        
+    },
+    methods:{
+        getCurrentTime(){
+        const currentDate = new Date(); 
+        this.timestamp = currentDate. getTime(); 
+        return this.timestamp;
+        },
+        addTask(){
+            const newTask = {
+                number: this.tasks.length,
+                timestamp: this.getCurrentTime(),
+                text: this.text,
+                isCompleted: this.isCompleted,
+                isEdited: this.isEdited,
+                editValue: this.text
+            }
+            if (this.text !== ''){
+            this.tasks.push(newTask);
+            }
+            else {
+                alert('error: task text field cannot be empty')
+            }
+            this.text = '';
+            this.number = 0;
+            this.isCompleted = false,
+            this.isEdited = false
+        },
+       deleteTask(timestamp){
+        this.tasks = this.tasks.filter(task => task.timestamp !== timestamp);
+       },
+       edit(task){
+        task.text = task.editValue;
+        task.isEdited = false;
+       },
+       
+
+    }
+})
+    </script>
+</body>
+</html>
